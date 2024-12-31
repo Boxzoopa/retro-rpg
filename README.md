@@ -1,4 +1,4 @@
-# One Monsth Game Challenge No.1: Retro RPG
+# One Month Game Challenge No.1: Retro RPG
 
 Make an old school retro rpg, like final fantasy
 

@@ -6,9 +6,9 @@ Goal: Make an old school retro rpg, like final fantasy
 
 - [x] Entity Class
 - [x] Draw and move Player
-- [ ] Tilemap system
-- [ ] Camera
-- [ ] UI
+- [x] Tilemap system
+- [x] Camera
+- [x] UI
 - [ ] Map switching system
 - [ ] NPCs
 - [ ] Dialog system

@@ -8,7 +8,7 @@ Character::Character(float x, float y, Texture2D tex)
     sprite.destRect.width = 64;
     sprite.destRect.height = 64;
 
-    speed = 100.0f;
+    speed = 250.0f;
     velocity = {0, 0};
     inputVector = {0, 0};
 }

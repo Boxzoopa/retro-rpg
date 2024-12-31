@@ -73,26 +73,37 @@ public:
     }
 
     // Draw the map
-    void Draw() {
+    void draw(int scale = 1) {
         for (int i = 0; i < mapWidth * mapHeight; i++) {
             int tileId = mapData[i] - 1; // Convert 1-based Tiled IDs to 0-based
             if (tileId < 0) continue;   // Skip empty tiles (ID 0)
 
-            // Calculate source rectangle in tileset
+            // Calculate the source rectangle in the tileset
             int tileX = margin + (tileId % tilesPerRow) * (tileWidth + spacing);
             int tileY = margin + (tileId / tilesPerRow) * (tileHeight + spacing);
 
-            // Calculate destination position on the screen
-            int screenX = (i % mapWidth) * tileWidth;
-            int screenY = (i / mapWidth) * tileHeight;
+            // Source rectangle in tileset texture
+            Rectangle sourceRec = { 
+                (float)tileX, 
+                (float)tileY, 
+                (float)tileWidth, 
+                (float)tileHeight 
+            };
 
-            // Draw the tile
-            DrawTexturePro(tileset,
-                (Rectangle){ (float)tileX, (float)tileY, (float)tileWidth, (float)tileHeight },
-                (Rectangle){ (float)screenX, (float)screenY, (float)tileWidth, (float)tileHeight },
-                (Vector2){ 0.0f, 0.0f },
-                0.0f,
-                WHITE);
+            // Calculate the destination position on the screen (with scaling)
+            int screenX = (i % mapWidth) * tileWidth * scale;
+            int screenY = (i / mapWidth) * tileHeight * scale;
+
+            // Destination rectangle on screen (scaled)
+            Rectangle destRec = {
+                (float)screenX, 
+                (float)screenY, 
+                (float)(tileWidth * scale), 
+                (float)(tileHeight * scale)
+            };
+
+            // Draw the tile on the screen
+            DrawTexturePro(tileset, sourceRec, destRec, (Vector2){ 0.0f, 0.0f }, 0.0f, WHITE);
         }
     }
 };

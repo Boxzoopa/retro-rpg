@@ -2,6 +2,9 @@
 #include <Map.h>
 #include <headers/Character.h>
 #include <headers/Menu.h>
+#include <headers/SceneManager.h>
+
+#include <scenes/gameScene.h>
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -22,6 +25,7 @@ int main()
     SetTargetFPS(60);
     float dt = 0.f;
 
+#pragma region old stuff
     // Load player texture and create player object
     Texture2D playerTexture = LoadTexture("assets/characters/protag-sheet.png");
     Character player(0, 0, playerTexture);
@@ -60,12 +64,24 @@ int main()
     cam.offset = {WIDTH / 2.0f, HEIGHT / 2.0f}; // Camera offset to center on screen
     cam.zoom = 1.0f;  // Set zoom level
 
+
+#pragma endregion old stuff
+
+    /// Game scene setup
+    SceneManager sceneManager;
+    sceneManager.AddScene(new GameScene());
+    sceneManager.GetCurrentScene()->load();
+
+
     // Main game loop
     while (!WindowShouldClose())
     {
         dt = GetFrameTime();  // Get frame time
+
+#pragma region old stuff
         cam.target = {player.sprite.destRect.x + player.sprite.destRect.width / 2, 
                       player.sprite.destRect.y + player.sprite.destRect.height / 2};  // Follow player
+
 
         if (gameActive) {
             player.move(player.getInput(), dt);
@@ -112,31 +128,42 @@ int main()
         if (IsKeyPressed(KEY_ENTER) && gameActive) {
             isGameMenuActive = true;
         }
+#pragma endregion old stuff
+
+        sceneManager.GetCurrentScene()->update(dt);
 
         // Draw everything
-        BeginDrawing();
-        ClearBackground(BLACK);
-        BeginMode2D(cam);
+        BeginDrawing(); 
 
-        map.draw(4);  // Draw the map
-        player.draw();  // Draw the player character
+            ClearBackground(BLACK);
 
-        EndMode2D();
+        #pragma region old stuff
+            BeginMode2D(cam);
 
-        // Draw active menu
-        if (isMainMenuActive) {
-            mainMenu.draw();
-        } else if (isGameMenuActive) {
-            gameMenu.draw();  // Draw the game menu
+            map.draw(4);  // Draw the map
+            player.draw();  // Draw the player character
 
-            // Draw character stats at the bottom of the screen
-            DrawText(("LVL: " + std::to_string(playerStats.level)).c_str(), 20, HEIGHT - 140, 20, WHITE);
-            DrawText(("HP: " + std::to_string(playerStats.hp)).c_str(), 20, HEIGHT - 120, 20, WHITE);
-            DrawText(("MP: " + std::to_string(playerStats.mp)).c_str(), 20, HEIGHT - 100, 20, WHITE);
-            DrawText(("EXP: " + std::to_string(playerStats.exp)).c_str(), 20, HEIGHT - 80, 20, WHITE);
-            DrawText(("Cash: " + std::to_string(playerStats.cash)).c_str(), 20, HEIGHT - 60, 20, WHITE);
-        }
+            EndMode2D();
 
+            // Draw active menu
+            if (isMainMenuActive) {
+                mainMenu.draw();
+            } else if (isGameMenuActive) {
+                gameMenu.draw();  // Draw the game menu
+
+                // Draw character stats at the bottom of the screen
+                DrawText(("LVL: " + std::to_string(playerStats.level)).c_str(), 20, HEIGHT - 140, 20, WHITE);
+                DrawText(("HP: " + std::to_string(playerStats.hp)).c_str(), 20, HEIGHT - 120, 20, WHITE);
+                DrawText(("MP: " + std::to_string(playerStats.mp)).c_str(), 20, HEIGHT - 100, 20, WHITE);
+                DrawText(("EXP: " + std::to_string(playerStats.exp)).c_str(), 20, HEIGHT - 80, 20, WHITE);
+                DrawText(("Cash: " + std::to_string(playerStats.cash)).c_str(), 20, HEIGHT - 60, 20, WHITE);
+            }
+
+        #pragma endregion old stuff
+            
+            sceneManager.GetCurrentScene()->draw();
+
+        
         EndDrawing();
     }
 
